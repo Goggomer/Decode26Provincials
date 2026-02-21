@@ -9,7 +9,7 @@ public class FlyWheel implements Subsystem {
     public static final FlyWheel INSTANCE = new FlyWheel();
     private FlyWheel() { }
 
-    private final MotorEx shooter = new MotorEx("shooter");
+    private final MotorEx shooter = new MotorEx("Shooter");
 
     public final Command off = new SetPower(shooter, 0).requires(this);
     public final Command on = new SetPower(shooter, 1).requires(this);

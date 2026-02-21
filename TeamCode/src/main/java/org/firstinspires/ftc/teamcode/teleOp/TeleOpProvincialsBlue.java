@@ -92,6 +92,9 @@ public class TeleOpProvincialsBlue extends LinearOpMode {
         }
         if (gamepad2.dpad_right) manualTargetDegree -= turretSpeed;
         if (gamepad2.dpad_left) manualTargetDegree += turretSpeed;
+
+        // if gamepad2.left_bumper.
+
         if (gamepad2.y) manualTargetDegree = -90;
         if (gamepad2.b) manualTargetDegree = 90;
         manualTargetDegree = Math.max(-180, Math.min(180, manualTargetDegree));
@@ -197,7 +200,7 @@ public class TeleOpProvincialsBlue extends LinearOpMode {
         double transferPower = 0;
 
         if (superModeToggled) intakePower = 0.8; // Shooting - this could be changed in a range from 0.6-1.0 just in case balls are releasing too early
-        else if (gamepad2.left_bumper) intakePower = -0.5; // Reversing
+        else if (gamepad2.left_trigger > 0.5) intakePower = -0.75; // Reversing
             // else if (detected) intakePower = 0.55; // Slowing down intake when the distance sensor has got a ball
         else if (gamepad1.left_trigger > 0.5) intakePower = 0.9; // Normal Intaking
         else intakePower = 0; // Nil

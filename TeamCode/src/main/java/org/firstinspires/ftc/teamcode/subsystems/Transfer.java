@@ -9,7 +9,7 @@ public class Transfer implements Subsystem {
     public static final Transfer INSTANCE = new Transfer();
     private Transfer() { }
 
-    private final MotorEx transfer = new MotorEx("transfer");
+    private final MotorEx transfer = new MotorEx("Transfer");
 
     public final Command off = new SetPower(transfer, 0).requires(this);
     public final Command on = new SetPower(transfer, 1).requires(this);

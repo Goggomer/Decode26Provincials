@@ -16,10 +16,10 @@ public class FieldCentricDrive implements Component {
     Gamepad gamepad;
     @Override
     public void preInit() {
-        frontLeft = new MotorEx("fl").brakeMode();
-        frontRight = new MotorEx("fr").brakeMode();
-        backLeft = new MotorEx("bl").brakeMode();
-        backRight = new MotorEx("br").brakeMode();
+        frontLeft = new MotorEx("leftFront").brakeMode();
+        frontRight = new MotorEx("rightFront").brakeMode();
+        backLeft = new MotorEx("leftBack").brakeMode();
+        backRight = new MotorEx("rightBack").brakeMode();
         odo = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, "pinpoint");
     }
 

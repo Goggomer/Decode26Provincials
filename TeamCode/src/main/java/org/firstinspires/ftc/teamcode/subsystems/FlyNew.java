@@ -11,7 +11,7 @@ public class FlyNew implements Subsystem {
     public static final FlyNew INSTANCE = new FlyNew();
     private double currentTarget = 0;
 
-    private final MotorEx motor = new MotorEx("shooter");
+    private final MotorEx motor = new MotorEx("Shooter");
     private final ControlSystem controller = ControlSystem.builder()
             .velPid(0.015, 0, 0)
             .basicFF(0.004, 0, 0.05)

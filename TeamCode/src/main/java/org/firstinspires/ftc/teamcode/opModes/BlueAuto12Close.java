@@ -48,6 +48,7 @@ public class BlueAuto12Close extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed() {
         new SequentialGroup(
+                Turret.INSTANCE.tclose,
                 new FollowPath(paths.Path1),
                 Robot.INSTANCE.ShootClose,
                 new Delay(2),
@@ -61,9 +62,13 @@ public class BlueAuto12Close extends NextFTCOpMode {
                 new FollowPath(paths.Path5),
                 Robot.INSTANCE.ShootClose,
                 new Delay(2),
+                Robot.INSTANCE.IntakeOn,
                 new FollowPath(paths.Path6),
                 new FollowPath(paths.Path7),
-                Robot.INSTANCE.ShootClose
+                Robot.INSTANCE.ShootClose,
+                new Delay(2),
+                FlyNew.INSTANCE.off,
+                Turret.INSTANCE.rotateAndReset
         ).schedule();
     }
 

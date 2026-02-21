@@ -31,7 +31,7 @@ public class LimelightTurretAim extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // 1. Hardware Initialization
-        turretMotor = hardwareMap.get(DcMotor.class, "turret");
+        turretMotor = hardwareMap.get(DcMotor.class, "Turret");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Setup Limelight

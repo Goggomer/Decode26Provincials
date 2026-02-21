@@ -8,7 +8,7 @@ public class ServoBlocker implements Subsystem {
     public static final ServoBlocker INSTANCE = new ServoBlocker();
     private ServoBlocker() { }
 
-    private ServoEx servo = new ServoEx("blocker");
+    private ServoEx servo = new ServoEx("Stopper");
 
     public Command up = new SetPosition(servo, 0.6).requires(this);
     public Command down = new SetPosition(servo, 0.05).requires(this);

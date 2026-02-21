@@ -21,10 +21,10 @@ public class FieldCentricDrive {
         this.telemetry = telemetry;
 
         // Initialize Motors
-        frontLeft = hardwareMap.get(DcMotor.class, "fl");
-        frontRight = hardwareMap.get(DcMotor.class, "fr");
-        backLeft = hardwareMap.get(DcMotor.class, "bl");
-        backRight = hardwareMap.get(DcMotor.class, "br");
+        frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
+        frontRight = hardwareMap.get(DcMotor.class, "rightFront");
+        backLeft = hardwareMap.get(DcMotor.class, "leftBack");
+        backRight = hardwareMap.get(DcMotor.class, "rightBack");
 
         // Set Brake Mode (Equivalent to .brakeMode() in NextFTC)
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

@@ -12,7 +12,7 @@ public class Turret implements Subsystem {
     public static final Turret INSTANCE = new Turret();
 
     // Initialize with .zeroed() (sets current as 0) and .breakMode()
-    private final MotorEx motor = new MotorEx("turret")
+    private final MotorEx motor = new MotorEx("Turret")
             .brakeMode();
 
     // Small PID for the "rotate 500" movement
@@ -22,10 +22,13 @@ public class Turret implements Subsystem {
 
     private Turret() { }
 
-    // Command to rotate to 500 ticks and then immediately reset that position to 0
     public final Command rotateAndReset = new SequentialGroup(
-            new RunToPosition(controller, 500).requires(this),
+            new RunToPosition(controller, 450).requires(this),
             new InstantCommand(() -> motor.zeroed()) // This sets the new position as 0
+    ).named("RotateAndReset");
+
+    public final Command tclose = new SequentialGroup(
+            new RunToPosition(controller, -450).requires(this)
     ).named("RotateAndReset");
 
     @Override
