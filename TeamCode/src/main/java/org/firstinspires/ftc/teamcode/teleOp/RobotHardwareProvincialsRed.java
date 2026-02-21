@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -21,10 +23,10 @@ public class RobotHardwareProvincialsRed {
 
     // ---------------- Turret Flywheel ----------------
     public DcMotorEx turretFlywheel;
-    public static double PClose1 = 40.0, FClose1 = 14.25; // Closer too shooting area (Press X during TeleOp)
-    public static double PClose2 = 40.0, FClose2 = 14.25; // Sujaan Auto (Press B during TeleOp)
-    public static double PFar1 = 50.0, FFar1 = 14.075; // Backed up Far (Press Y during TeleOp)
-    public static double PFar2 = 50.0, FFar2 = 13.80; // Sujaan Auto Placement Far (Press A during TeleOp)
+    public static double PClose1 = 40.0, FClose1 = 14.25; // Nearer to shooting zone CLOSE TELEOP (Press X during TeleOp)
+    public static double PClose2 = 40.0, FClose2 = 14.25; // Sujaan Auto Position Close (Center of shooting tile) (Press B during TeleOp)
+    public static double PFar1 = 50.0, FFar1 = 14.075; // Backed up FAR TELEOP (Press Y during TeleOp)
+    public static double PFar2 = 50.0, FFar2 = 13.80; // Sujaan Auto Position Far (Touching left and top line for blue / Touching right and top line for red) (Press A during TeleOp)
     public static double I = 0.0, D = 0.0;
     public static double targetRPMClose1 = 2600, targetRPMClose2  = 2500, targetRPMFar1 = 3200, targetRPMFar2 = 3100;
     public static double targetTPSClose1 = 0, targetTPSClose2  = 0, targetTPSFar1 = 3400, targetTPSFar2 = 3300;
@@ -65,7 +67,7 @@ public class RobotHardwareProvincialsRed {
         laserInput.setMode(DigitalChannel.Mode.INPUT);
 
         stopper = hwMap.get(Servo.class, "Stopper");
-        stopper.setPosition(0.30);
+        stopper.setPosition(0.05);
 
         // Turret Flywheel
         turretFlywheel = hwMap.get(DcMotorEx.class, "Shooter");

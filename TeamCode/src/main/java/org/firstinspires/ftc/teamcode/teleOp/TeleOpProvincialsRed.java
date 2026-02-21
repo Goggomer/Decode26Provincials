@@ -8,31 +8,36 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.teleOp.REVDistanceSensorSub;
+import org.firstinspires.ftc.teamcode.teleOp.RobotHardwareProvincialsRed;
+import org.firstinspires.ftc.teamcode.teleOp.RGBSub;
+import org.firstinspires.ftc.teamcode.teleOp.ConfigLED;
 
 @Config
 @TeleOp
 public class TeleOpProvincialsRed extends LinearOpMode {
     RobotHardwareProvincialsRed teleRobot = new RobotHardwareProvincialsRed();
-
-    boolean superModeToggled = false, shooterOn = false, distanceSensorOn = false, detected = false;
+    ConfigLED leddy = new ConfigLED();
+    REVDistanceSensorSub revy = new REVDistanceSensorSub();
+    boolean superModeToggled = false, shooterOn = false, distanceSensorOn = true, detected = false, detected2 = false;
     boolean stateHigh = false;
     boolean xWasPressed = false, yWasPressed = false, aWasPressed = false, bWasPressed = false;
     boolean x2WasPressed = false, b2WasPressed = false;
+    boolean intakeOn = false, transferOn = false;
     double currentTargetTPS = 0, currentP = 0, currentF = 0, currentRPM = 0;
-
     boolean isAutoAim = false, manualTogglePreviouslyPressed = false;
     public double manualTargetDegree = 0.0;
-    public final double turretSpeed = 5.0;
+    public final double turretSpeed = 3.0;
     public RGBSub rgb;
-
-    public static double superIntakePower = 0, superTransferPower = 0;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         teleRobot.init(hardwareMap);
         rgb = new RGBSub(hardwareMap);
+        leddy.init(hardwareMap);
+        revy.init(hardwareMap);
         FieldCentricDrive drive = new FieldCentricDrive(hardwareMap, gamepad1, telemetry);
         waitForStart();
 
@@ -64,7 +69,6 @@ public class TeleOpProvincialsRed extends LinearOpMode {
         boolean manualTogglePressed = gamepad2.a;
         if (manualTogglePressed && !manualTogglePreviouslyPressed) {
             isAutoAim = !isAutoAim;
-
             if (!isAutoAim) {
                 manualTargetDegree = teleRobot.getCurrentTurretDegrees();
             }
@@ -87,10 +91,9 @@ public class TeleOpProvincialsRed extends LinearOpMode {
         }
         if (gamepad2.dpad_right) manualTargetDegree -= turretSpeed;
         if (gamepad2.dpad_left) manualTargetDegree += turretSpeed;
-        if (gamepad2.y) manualTargetDegree = 0;
-
+        if (gamepad2.y) manualTargetDegree = -90;
+        if (gamepad2.b) manualTargetDegree = 90;
         manualTargetDegree = Math.max(-180, Math.min(180, manualTargetDegree));
-
         teleRobot.setSpinnerAngle(manualTargetDegree);
     }
 
@@ -102,22 +105,20 @@ public class TeleOpProvincialsRed extends LinearOpMode {
         leftTriggerPreviouslyPressed = leftTriggerPressed; */
 
         // Distance Sensor Code
-
         stateHigh = teleRobot.getDistanceState();
-
-        if (gamepad2.b && !b2WasPressed){
+        /* if (gamepad2.b && !b2WasPressed){
             distanceSensorOn = !distanceSensorOn;
         }
-        b2WasPressed = gamepad2.b;
+        b2WasPressed = gamepad2.b; */
 
         if (distanceSensorOn){
             detected = stateHigh;
         } else{
             detected = false;
         }
+        detected2 = (revy.sensorDistance.getDistance(DistanceUnit.INCH) > 2) && (revy.sensorDistance.getDistance(DistanceUnit.INCH) < 8.5);
 
         // Shooting Time
-
         if (gamepad2.x && !x2WasPressed) {
             superModeToggled = !superModeToggled;
         }
@@ -170,8 +171,7 @@ public class TeleOpProvincialsRed extends LinearOpMode {
         if (shooterOn) {
             teleRobot.turretFlywheel.setVelocityPIDFCoefficients(currentP, 0, 0, currentF);
             teleRobot.turretFlywheel.setVelocity(currentTargetTPS);
-            teleRobot.stopper.setPosition(0.03);
-
+            teleRobot.stopper.setPosition(0.6);
             if (Math.abs(teleRobot.getActualRPM() - currentRPM) <= 150) {
                 rgb.setSolid(RGBSub.GREEN);
             } else {
@@ -179,35 +179,47 @@ public class TeleOpProvincialsRed extends LinearOpMode {
             }
         } else {
             teleRobot.turretFlywheel.setPower(0);
-            teleRobot.stopper.setPosition(0.30);
-            rgb.setSolid(RGBSub.OFF);
+            teleRobot.stopper.setPosition(0.05);
+            if (detected && detected2) {
+                rgb.setSolid(RGBSub.BLUE);
+            } else if (detected){
+                rgb.setSolid(RGBSub.YELLOW);
+            } else if (detected2){
+                rgb.setSolid(RGBSub.RED);
+            } else {
+                rgb.setSolid(RGBSub.OFF);
+            }
         }
 
         // Intake and Transfer
-
         double intakePower = 0;
         double transferPower = 0;
 
         if (superModeToggled) intakePower = 0.8; // Shooting - this could be changed in a range from 0.6-1.0 just in case balls are releasing too early
         else if (gamepad2.left_bumper) intakePower = -0.5; // Reversing
-        else if (detected) intakePower = 0.55; // Slowing down intake when the distance sensor has got a ball
+            // else if (detected) intakePower = 0.55; // Slowing down intake when the distance sensor has got a ball
         else if (gamepad1.left_trigger > 0.5) intakePower = 0.9; // Normal Intaking
         else intakePower = 0; // Nil
 
         if (superModeToggled) transferPower = 1.0; // Shooting
-        else if (gamepad2.right_bumper){ // Reversing and Slapping the Ball to move down (Upraj Idea)
+        else if (gamepad2.right_bumper){ // Reversing and Slapping the Ball to move down
             transferPower = -1.0;
-            teleRobot.stopper.setPosition(0.36);
+            teleRobot.stopper.setPosition(0.0);
             sleep(200);
-            teleRobot.stopper.setPosition(0.30);
+            teleRobot.stopper.setPosition(0.05);
         }
         else if (gamepad2.right_trigger > 0.5) transferPower = 0.85; // Manual Transfer Control from Gamepad2
-        else if (detected) transferPower = 0.0; // Distance Sensor stops transfer when it sees first ball
-        else if (gamepad1.left_trigger > 0.5 && distanceSensorOn) transferPower = 0.9; // Normal Intaking
+            // else if (detected) transferPower = 0.0; // Distance Sensor stops transfer when it sees first ball
+            // else if (gamepad1.left_trigger > 0.5 && distanceSensorOn) transferPower = 0.9; // Normal Intaking
         else transferPower = 0; // Nil
 
         teleRobot.intake.setPower(intakePower);
         teleRobot.transfer.setPower(transferPower);
+
+        intakeOn = Math.abs(intakePower) > 0;
+        transferOn = Math.abs(transferPower) > 0;
+        leddy.setIntakeLed(intakeOn);
+        leddy.setTransferLed(transferOn);
 
         telemetry.update();
     }

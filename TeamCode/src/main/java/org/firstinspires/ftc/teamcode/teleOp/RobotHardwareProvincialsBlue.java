@@ -23,10 +23,10 @@ public class RobotHardwareProvincialsBlue {
 
     // ---------------- Turret Flywheel ----------------
     public DcMotorEx turretFlywheel;
-    public static double PClose1 = 40.0, FClose1 = 14.25; // Closer too shooting area (Press X during TeleOp)
-    public static double PClose2 = 40.0, FClose2 = 14.25; // Sujaan Auto (Press B during TeleOp)
-    public static double PFar1 = 50.0, FFar1 = 14.075; // Backed up Far (Press Y during TeleOp)
-    public static double PFar2 = 50.0, FFar2 = 13.80; // Sujaan Auto Placement Far (Press A during TeleOp)
+    public static double PClose1 = 40.0, FClose1 = 14.25; // Nearer to shooting zone CLOSE TELEOP (Press X during TeleOp)
+    public static double PClose2 = 40.0, FClose2 = 14.25; // Sujaan Auto Position Close (Center of shooting tile) (Press B during TeleOp)
+    public static double PFar1 = 50.0, FFar1 = 14.075; // Backed up FAR TELEOP (Press Y during TeleOp)
+    public static double PFar2 = 50.0, FFar2 = 13.80; // Sujaan Auto Position Far (Touching left and top line for blue / Touching right and top line for red) (Press A during TeleOp)
     public static double I = 0.0, D = 0.0;
     public static double targetRPMClose1 = 2600, targetRPMClose2  = 2500, targetRPMFar1 = 3200, targetRPMFar2 = 3100;
     public static double targetTPSClose1 = 0, targetTPSClose2  = 0, targetTPSFar1 = 3400, targetTPSFar2 = 3300;
@@ -44,10 +44,6 @@ public class RobotHardwareProvincialsBlue {
     public static double teleRawError = 0.0;
     public static double MAX_TURRET_DEGREES = 180.0, MIN_TURRET_DEGREES = -180.0;
 
-    // ---------------- Robot Drive & IMU ----------------
-    public DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
-    public IMU imu;
-
     // ---------------- SPINNER Constants ----------------
     public final double spinnerEncoderPPR = 145.1;
     public final double spinnerGearRatio = 6.0;
@@ -61,15 +57,6 @@ public class RobotHardwareProvincialsBlue {
 
     public void init(HardwareMap hwMap) {
 
-        // Drive
-        frontLeftMotor = hwMap.dcMotor.get("leftFront");
-        backLeftMotor  = hwMap.dcMotor.get("leftBack");
-        frontRightMotor = hwMap.dcMotor.get("rightFront");
-        backRightMotor = hwMap.dcMotor.get("rightBack");
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
         // Intake/Transfer
         intake = hwMap.get(DcMotor.class, "Intake");
         transfer = hwMap.get(DcMotor.class, "Transfer");
@@ -80,7 +67,7 @@ public class RobotHardwareProvincialsBlue {
         laserInput.setMode(DigitalChannel.Mode.INPUT);
 
         stopper = hwMap.get(Servo.class, "Stopper");
-        stopper.setPosition(0.30);
+        stopper.setPosition(0.05);
 
         // Turret Flywheel
         turretFlywheel = hwMap.get(DcMotorEx.class, "Shooter");
@@ -105,12 +92,6 @@ public class RobotHardwareProvincialsBlue {
         limelight = hwMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
         limelight.start();
-
-        imu = hwMap.get(IMU.class, "imu");
-        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
-        )));
     }
 
     // Distance Sensor Function
