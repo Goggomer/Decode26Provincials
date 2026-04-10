@@ -6,8 +6,11 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
@@ -34,7 +37,7 @@ public class RedAuto9Far extends NextFTCOpMode {
     @Override
     public void onInit() {
         paths = new Paths(follower());
-        follower().setStartingPose(new Pose(86, 16, Math.toRadians(0)));
+        follower().setStartingPose(new Pose(88, 8, Math.toRadians(0)));
         Globals.alliance = Globals.Alliance.RED;
     }
 
@@ -57,7 +60,9 @@ public class RedAuto9Far extends NextFTCOpMode {
                 Robot.INSTANCE.IntakeOn,
                 new FollowPath(paths.Path4),
                 new FollowPath(paths.Path5),
-                Robot.INSTANCE.ShootFar
+                Robot.INSTANCE.ShootFar,
+                new Delay(2),
+                FlyNew.INSTANCE.off
         ).schedule();
     }
 
@@ -71,9 +76,9 @@ public class RedAuto9Far extends NextFTCOpMode {
         public Paths(Follower follower) {
             Path1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(87.000, 9.000),
+                                    new Pose(88.000, 8.000),
 
-                                    new Pose(90.000, 20.000)
+                                    new Pose(85.000, 23.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
@@ -81,9 +86,9 @@ public class RedAuto9Far extends NextFTCOpMode {
 
             Path2 = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(90.000, 20.000),
-                                    new Pose(101.890, 35.922),
-                                    new Pose(76.621, 35.790),
+                                    new Pose(85.000, 23.000),
+                                    new Pose(105.795, 35.885),
+                                    new Pose(74.567, 35.012),
                                     new Pose(134.000, 36.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
@@ -94,7 +99,7 @@ public class RedAuto9Far extends NextFTCOpMode {
                             new BezierLine(
                                     new Pose(134.000, 36.000),
 
-                                    new Pose(90.000, 20.000)
+                                    new Pose(85.000, 23.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
@@ -102,10 +107,10 @@ public class RedAuto9Far extends NextFTCOpMode {
 
             Path4 = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(90.000, 20.000),
-                                    new Pose(89.391, 66.539),
-                                    new Pose(97.685, 59.483),
-                                    new Pose(126.943, 59.672)
+                                    new Pose(85.000, 23.000),
+                                    new Pose(99.771, 63.544),
+                                    new Pose(91.218, 58.967),
+                                    new Pose(126.000, 60.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
@@ -113,9 +118,9 @@ public class RedAuto9Far extends NextFTCOpMode {
 
             Path5 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(126.943, 59.672),
+                                    new Pose(126.000, 60.000),
 
-                                    new Pose(90.000, 20.000)
+                                    new Pose(85.000, 23.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 

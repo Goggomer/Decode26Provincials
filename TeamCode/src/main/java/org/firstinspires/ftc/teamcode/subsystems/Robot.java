@@ -81,8 +81,28 @@ public class Robot extends SubsystemGroup {
                     Intake.INSTANCE.on
             );
 
-    public final Command TurretClose =
-            new ParallelGroup(
-                    Turret.INSTANCE.rotateAndReset
+    public final Command ShootFarDelay =
+            new SequentialGroup(
+                    // 1. Tell the flywheel to start (This finishes instantly)
+                    FlyNew.INSTANCE.fast,
+
+                    // 2. Prepare the hardware
+                    ServoBlocker.INSTANCE.down,
+                    Transfer.INSTANCE.off,
+                    Intake.INSTANCE.off,
+
+                    // 3. THE WAIT: The sequence stops here until the motor is actually fast enough
+                    new WaitUntil(FlyNew.INSTANCE::isAtSpeed),
+
+                    // 4. FIRE: This only runs AFTER isAtSpeed returns true
+                    ServoBlocker.INSTANCE.up,
+                    new Delay(1),
+                    Transfer.INSTANCE.on,
+
+                    // 5. SUCCESS: Keep things running for a moment to let the ball exit
+                    new Delay(1),
+
+                    // Optional: Turn intake back on or flywheel off
+                    Intake.INSTANCE.on
             );
 }

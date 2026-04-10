@@ -8,6 +8,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -60,8 +61,8 @@ public class BlueAuto9Close extends NextFTCOpMode {
                 new FollowPath(paths.Path4),
                 new FollowPath(paths.Path5),
                 Robot.INSTANCE.ShootClose,
-                new Delay(3),
-                Robot.INSTANCE.TurretClose
+                new Delay(2),
+                FlyNew.INSTANCE.off
         ).schedule();
     }
 
@@ -95,7 +96,7 @@ public class BlueAuto9Close extends NextFTCOpMode {
 
             Path3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(17.000, 84.000),
+                                    new Pose(16.000, 84.000),
 
                                     new Pose(60.000, 84.000)
                             )
@@ -108,7 +109,7 @@ public class BlueAuto9Close extends NextFTCOpMode {
                                     new Pose(60.000, 84.000),
                                     new Pose(31.675, 59.613),
                                     new Pose(64.087, 58.616),
-                                    new Pose(15, 59.984)
+                                    new Pose(15, 57.984)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -116,7 +117,7 @@ public class BlueAuto9Close extends NextFTCOpMode {
 
             Path5 = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(16.217, 59.984),
+                                    new Pose(15, 57.984),
                                     new Pose(50.935, 54.212),
                                     new Pose(60.000, 84.000)
                             )

@@ -22,12 +22,12 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 
 import static dev.nextftc.extensions.pedro.PedroComponent.follower;
 
-@Autonomous(name = "Blue Auto: Far 9 Ball", preselectTeleOp = "TeleOpProvincialsBlue")
-public class BlueAuto9Far extends NextFTCOpMode {
+@Autonomous(name = "Red Auto: Far 6 Ball", preselectTeleOp = "TeleOpProvincialsRed")
+public class RedAuto6Far extends NextFTCOpMode {
     private Paths paths;
     private boolean aborted = false;
 
-    public BlueAuto9Far() {
+    public RedAuto6Far() {
         addComponents(
                 new SubsystemComponent(Intake.INSTANCE, FlyWheel.INSTANCE, Intake.INSTANCE, Transfer.INSTANCE, ServoBlocker.INSTANCE, Robot.INSTANCE),
                 new PedroComponent(Constants::createFollower)
@@ -37,8 +37,8 @@ public class BlueAuto9Far extends NextFTCOpMode {
     @Override
     public void onInit() {
         paths = new Paths(follower());
-        follower().setStartingPose(new Pose(56, 8, Math.toRadians(180)));
-        Globals.alliance = Globals.Alliance.BLUE;
+        follower().setStartingPose(new Pose(88, 8, Math.toRadians(0)));
+        Globals.alliance = Globals.Alliance.RED;
     }
 
     @Override
@@ -55,16 +55,14 @@ public class BlueAuto9Far extends NextFTCOpMode {
                 Robot.INSTANCE.IntakeOn,
                 new FollowPath(paths.Path2),
                 new FollowPath(paths.Path3),
+                Robot.INSTANCE.ShootFar,
+                new Delay(2),
                 new FollowPath(paths.Path4),
+                new FollowPath(paths.Path5),
                 Robot.INSTANCE.ShootFar,
                 new Delay(2),
                 Robot.INSTANCE.IntakeOn,
-                new FollowPath(paths.Path5),
-                new FollowPath(paths.Path6),
-                new FollowPath(paths.Path7),
-                Robot.INSTANCE.ShootFar,
-                new Delay(2),
-                FlyNew.INSTANCE.off
+                new FollowPath(paths.Path6)
         ).schedule();
     }
 
@@ -75,77 +73,69 @@ public class BlueAuto9Far extends NextFTCOpMode {
         public PathChain Path4;
         public PathChain Path5;
         public PathChain Path6;
-        public PathChain Path7;
 
         public Paths(Follower follower) {
-            Path1 = follower.pathBuilder().addPath(
+            Path1 = follower.pathBuilder()
+                    .addPath(
                             new BezierLine(
-                                    new Pose(56.000, 8.000),
-
-                                    new Pose(59.000, 23.000)
+                                    new Pose(88.000, 8.000),
+                                    new Pose(85.000, 23.000)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
-            Path2 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(59.000, 23.000),
-
-                                    new Pose(41.000, 36.000)
+            Path2 = follower.pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(85.000, 23.000),
+                                    new Pose(97.752, 36.332),
+                                    new Pose(88.089, 35.986),
+                                    new Pose(134.000, 36.000)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
-            Path3 = follower.pathBuilder().addPath(
+            Path3 = follower.pathBuilder()
+                    .addPath(
                             new BezierLine(
-                                    new Pose(41.000, 36.000),
-
-                                    new Pose(8.000, 36.000)
+                                    new Pose(134.000, 36.000),
+                                    new Pose(85.000, 23.000)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
-            Path4 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(12.000, 36.000),
-
-                                    new Pose(59.000, 23.000)
+            Path4 = follower.pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(85.000, 23.000),
+                                    new Pose(110.033, 7.065),
+                                    new Pose(134.000, 9.000)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
-            Path5 = follower.pathBuilder().addPath(
+            Path5 = follower.pathBuilder()
+                    .addPath(
                             new BezierLine(
-                                    new Pose(59.000, 23.000),
-
-                                    new Pose(41.000, 59.000)
+                                    new Pose(134.000, 9.000),
+                                    new Pose(85.000, 23.000)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
-            Path6 = follower.pathBuilder().addPath(
+            Path6 = follower.pathBuilder()
+                    .addPath(
                             new BezierLine(
-                                    new Pose(41.000, 59.000),
-
-                                    new Pose(8.000, 59.000)
+                                    new Pose(85.000, 23.000),
+                                    new Pose(120.000, 11.000)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
-
-                    .build();
-
-            Path7 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(12.000, 59.000),
-
-                                    new Pose(59.000, 23.000)
-                            )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
         }
     }

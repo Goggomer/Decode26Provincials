@@ -8,6 +8,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -21,12 +22,12 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 
 import static dev.nextftc.extensions.pedro.PedroComponent.follower;
 
-@Autonomous(name = "Blue Auto: Close 12 Ball", preselectTeleOp = "TeleOpProvincialsBlue")
-public class BlueAuto12Close extends NextFTCOpMode {
+@Autonomous(name = "Blue Auto: Close 9 Ball Release Front", preselectTeleOp = "TeleOpProvincialsBlue")
+public class BlueAuto9CloseReleaseFront extends NextFTCOpMode {
     private Paths paths;
     private boolean aborted = false;
 
-    public BlueAuto12Close() {
+    public BlueAuto9CloseReleaseFront() {
         addComponents(
                 new SubsystemComponent(Intake.INSTANCE, FlyNew.INSTANCE, Intake.INSTANCE, Transfer.INSTANCE, ServoBlocker.INSTANCE, Robot.INSTANCE),
                 new PedroComponent(Constants::createFollower)
@@ -54,22 +55,19 @@ public class BlueAuto12Close extends NextFTCOpMode {
                 Robot.INSTANCE.IntakeOn,
                 new FollowPath(paths.Path2),
                 new FollowPath(paths.Path3),
-                Robot.INSTANCE.ShootClose,
                 new Delay(2),
-                Robot.INSTANCE.IntakeOn,
                 new FollowPath(paths.Path4),
-                new FollowPath(paths.Path5),
+                new Delay(2),
                 Robot.INSTANCE.ShootClose,
                 new Delay(2),
                 Robot.INSTANCE.IntakeOn,
+                new FollowPath(paths.Path5),
                 new FollowPath(paths.Path6),
-                new FollowPath(paths.Path7),
                 Robot.INSTANCE.ShootClose,
                 new Delay(2),
                 FlyNew.INSTANCE.off
         ).schedule();
     }
-
     public static class Paths {
         public PathChain Path1;
         public PathChain Path2;
@@ -77,77 +75,70 @@ public class BlueAuto12Close extends NextFTCOpMode {
         public PathChain Path4;
         public PathChain Path5;
         public PathChain Path6;
-        public PathChain Path7;
 
         public Paths(Follower follower) {
-            Path1 = follower.pathBuilder().addPath(
+            Path1 = follower.pathBuilder()
+                    .addPath(
                             new BezierLine(
                                     new Pose(22.500, 120.500),
-
                                     new Pose(60.000, 84.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            Path2 = follower.pathBuilder().addPath(
+            Path2 = follower.pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(60.000, 84.000),
+                                    new Pose(31.636, 58.215),
+                                    new Pose(76.710, 59.664),
+                                    new Pose(10.000, 60.000)
+                            )
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
+
+            Path3 = follower.pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(10.000, 60.000),
+                                    new Pose(32.262, 56.477),
+                                    new Pose(15.701, 66.822)
+                            )
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
+
+            Path4 = follower.pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(15.701, 64.822),
+                                    new Pose(59.967, 54.621),
+                                    new Pose(60.000, 84.000)
+                            )
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
+
+            Path5 = follower.pathBuilder()
+                    .addPath(
                             new BezierLine(
                                     new Pose(60.000, 84.000),
-
                                     new Pose(16.000, 84.000)
                             )
-                    ).setTangentHeadingInterpolation()
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            Path3 = follower.pathBuilder().addPath(
+            Path6 = follower.pathBuilder()
+                    .addPath(
                             new BezierLine(
                                     new Pose(16.000, 84.000),
-
                                     new Pose(60.000, 84.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .build();
-
-            Path4 = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(60.000, 84.000),
-                                    new Pose(37.149, 58.153),
-                                    new Pose(75.259, 60.456),
-                                    new Pose(6.905, 59.629)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
-                    .build();
-
-            Path5 = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(8.905, 59.629),
-                                    new Pose(66.882, 57.053),
-                                    new Pose(60.000, 84.000)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
-                    .build();
-
-            Path6 = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(60.000, 84.000),
-                                    new Pose(38.561, 31.124),
-                                    new Pose(66.237, 36.005),
-                                    new Pose(9.000, 36.000)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .build();
-
-            Path7 = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(10.000, 36.000),
-
-                                    new Pose(60.000, 84.000)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
         }
     }

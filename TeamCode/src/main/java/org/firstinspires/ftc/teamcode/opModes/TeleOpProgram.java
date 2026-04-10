@@ -43,10 +43,6 @@ public class TeleOpProgram extends NextFTCOpMode {
                         Robot.INSTANCE.RobotOff
                 );
 
-        Gamepads.gamepad1().leftBumper()
-                .whenBecomesTrue(
-                        Robot.INSTANCE.TurretClose
-                );
 
         Gamepads.gamepad1().options().whenTrue(() -> drive.getOdo().resetPosAndIMU());
     }

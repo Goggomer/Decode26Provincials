@@ -10,25 +10,25 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 
 @Config
 public class RobotHardwareProvincialsRed {
 
     // ---------------- Intake & Transfer & Distance Sensor & Servo ----------------
+    public DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
+    public IMU imu;
     public DcMotor intake, transfer;
-    public DigitalChannel laserInput;
     public Servo stopper;
 
     // ---------------- Turret Flywheel ----------------
-    public DcMotorEx turretFlywheel;
+    public DcMotorEx Flywheel;
     public static double PClose1 = 40.0, FClose1 = 14.25; // Nearer to shooting zone CLOSE TELEOP (Press X during TeleOp)
     public static double PClose2 = 40.0, FClose2 = 14.25; // Sujaan Auto Position Close (Center of shooting tile) (Press B during TeleOp)
     public static double PFar1 = 50.0, FFar1 = 14.075; // Backed up FAR TELEOP (Press Y during TeleOp)
     public static double PFar2 = 50.0, FFar2 = 13.80; // Sujaan Auto Position Far (Touching left and top line for blue / Touching right and top line for red) (Press A during TeleOp)
     public static double I = 0.0, D = 0.0;
-    public static double targetRPMClose1 = 2600, targetRPMClose2  = 2500, targetRPMFar1 = 3200, targetRPMFar2 = 3100;
+    public static double targetRPMClose1 = 2800, targetRPMClose2  = 2700, targetRPMFar1 = 3200, targetRPMFar2 = 3100;
     public static double targetTPSClose1 = 0, targetTPSClose2  = 0, targetTPSFar1 = 3400, targetTPSFar2 = 3300;
     public static double shooterGearRatio = 1.0;
     public static double TICKS_PER_REV = 28.0 * shooterGearRatio;
@@ -57,24 +57,30 @@ public class RobotHardwareProvincialsRed {
 
     public void init(HardwareMap hwMap) {
 
+        // Drive
+        frontLeftMotor = hwMap.dcMotor.get("leftFront");
+        backLeftMotor  = hwMap.dcMotor.get("leftBack");
+        frontRightMotor = hwMap.dcMotor.get("rightFront");
+        backRightMotor = hwMap.dcMotor.get("rightBack");
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // Intake/Transfer
         intake = hwMap.get(DcMotor.class, "Intake");
         transfer = hwMap.get(DcMotor.class, "Transfer");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        laserInput = hwMap.get(DigitalChannel.class, "laserDigitalInput");
-        laserInput.setMode(DigitalChannel.Mode.INPUT);
-
         stopper = hwMap.get(Servo.class, "Stopper");
         stopper.setPosition(0.05);
 
         // Turret Flywheel
-        turretFlywheel = hwMap.get(DcMotorEx.class, "Shooter");
-        turretFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        turretFlywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // ---
-        turretFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        turretFlywheel.setDirection(DcMotorSimple.Direction.FORWARD);
+        Flywheel = hwMap.get(DcMotorEx.class, "Shooter");
+        Flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Flywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // ---
+        Flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Flywheel.setDirection(DcMotorSimple.Direction.FORWARD);
         targetTPSClose1 = targetRPMClose1 * TICKS_PER_REV / 60.0;
         targetTPSClose2  = targetRPMClose2  * TICKS_PER_REV / 60.0;
         targetTPSFar1 = targetRPMFar1 * TICKS_PER_REV / 60.0;
@@ -92,17 +98,19 @@ public class RobotHardwareProvincialsRed {
         limelight = hwMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(1);
         limelight.start();
+
+        imu = hwMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+        )));
     }
 
     // Distance Sensor Function
-    public boolean getDistanceState(){
-        return laserInput.getState();
-    }
-
     // Shooter RPM Function
 
     public double getActualRPM() {
-        return (turretFlywheel.getVelocity() * 60.0) / TICKS_PER_REV;
+        return (Flywheel.getVelocity() * 60.0) / TICKS_PER_REV;
     }
 
     // ---------------- Turret Tracker/Spinner ----------------
@@ -191,31 +199,31 @@ public class RobotHardwareProvincialsRed {
 
     // ---------------- Autonomous Functions - Flywheel Shooter ----------------
     public void setShooterClose1RPM() {
-        turretFlywheel.setVelocityPIDFCoefficients(PClose1, I, D, FClose1);
-        turretFlywheel.setVelocity(targetTPSClose1);
+        Flywheel.setVelocityPIDFCoefficients(PClose1, I, D, FClose1);
+        Flywheel.setVelocity(targetTPSClose1);
         shooterOnAuto = true;
     }
 
     public void setShooterClose2RPM() {
-        turretFlywheel.setVelocityPIDFCoefficients(PClose2, I, D, FClose2);
-        turretFlywheel.setVelocity(targetTPSClose2);
+        Flywheel.setVelocityPIDFCoefficients(PClose2, I, D, FClose2);
+        Flywheel.setVelocity(targetTPSClose2);
         shooterOnAuto = true;
     }
 
     public void setShooterFar1RPM() {
-        turretFlywheel.setVelocityPIDFCoefficients(PFar1, I, D, FFar1);
-        turretFlywheel.setVelocity(targetTPSFar1);
+        Flywheel.setVelocityPIDFCoefficients(PFar1, I, D, FFar1);
+        Flywheel.setVelocity(targetTPSFar1);
         shooterOnAuto = true;
     }
 
     public void setShooterFar2RPM() {
-        turretFlywheel.setVelocityPIDFCoefficients(PFar2, I, D, FFar2);
-        turretFlywheel.setVelocity(targetTPSFar2);
+        Flywheel.setVelocityPIDFCoefficients(PFar2, I, D, FFar2);
+        Flywheel.setVelocity(targetTPSFar2);
         shooterOnAuto = true;
     }
 
     public void stopShooter() {
-        turretFlywheel.setVelocity(0);
+        Flywheel.setVelocity(0);
         shooterOnAuto = false;
     }
 }

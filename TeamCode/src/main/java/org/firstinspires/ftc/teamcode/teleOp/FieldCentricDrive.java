@@ -71,10 +71,6 @@ public class FieldCentricDrive {
         frontRight.setPower(frontRightPower);
         backRight.setPower(backRightPower);
         backLeft.setPower(backLeftPower);
-
-        telemetry.addData("heading", odo.getHeading(AngleUnit.DEGREES));
-        telemetry.addData("Position X", odo.getPosX(DistanceUnit.INCH));
-        telemetry.addData("Position Y", odo.getPosY(DistanceUnit.INCH));
     }
 
     public void resetHeading() {

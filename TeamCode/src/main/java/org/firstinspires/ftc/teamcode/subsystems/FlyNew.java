@@ -13,15 +13,15 @@ public class FlyNew implements Subsystem {
 
     private final MotorEx motor = new MotorEx("Shooter");
     private final ControlSystem controller = ControlSystem.builder()
-            .velPid(0.015, 0, 0)
-            .basicFF(0.004, 0, 0.05)
+            .velPid(0.2, 0, 0)
+            .basicFF(0.004, 0, 0)
             .build();
 
-    public final Command off = new InstantCommand(() -> setTargetSpeed(0)).named("FlywheelOff");
-    public final Command slow = new InstantCommand(() -> setTargetSpeed(1240)).named("FlywheelOn");
-    public final Command fast = new InstantCommand(() -> setTargetSpeed(1500)).named("FlywheelOn");
+        public final Command off = new InstantCommand(() -> setTargetSpeed(0)).named("FlywheelOff");
+        public final Command slow = new InstantCommand(() -> setTargetSpeed(1240)).named("FlywheelOn");
+        public final Command fast = new InstantCommand(() -> setTargetSpeed(1430)).named("FlywheelOn");
 
-    private void setTargetSpeed(double speed) {
+        private void setTargetSpeed(double speed) {
         currentTarget = speed;
         controller.setGoal(new KineticState(0, speed, 0));
     }
@@ -30,7 +30,7 @@ public class FlyNew implements Subsystem {
         if (currentTarget <= 0) return false;
 
         double currentVelocity = motor.getVelocity();
-        return (currentVelocity >= currentTarget - 30 && currentVelocity <= currentTarget + 30);
+        return (currentVelocity >= currentTarget - 10 && currentVelocity <= currentTarget + 10);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class FlyNew implements Subsystem {
 
         // ACTIVE BRAKING: If we are 50 RPM over the target,
         // cut the power or apply a tiny bit of reverse power.
-        if (currentTarget > 0 && velocity > (currentTarget + 50)) {
+        if (currentTarget > 0 && velocity > (currentTarget + 15)) {
             power = -0.05; // Apply 5% reverse power to drag the speed back down
         }
 
